@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevLoops</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Sora:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { font-family: 'Sora', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes pulse-glow { 0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)} 50%{box-shadow:0 0 40px rgba(16,185,129,0.4)} }
+    .float { animation: float 3s ease-in-out infinite; }
+    .glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .card-hover { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .gradient-text { background: linear-gradient(135deg, #10b981, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .tab-active { border-bottom: 2px solid #10b981; color: #10b981; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto bg-gray-950 text-gray-100">
+  <div id="app" class="w-full min-h-full">
+   <!-- Nav -->
+   <nav class="fixed top-0 w-full z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800/50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+     <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+       <i data-lucide="repeat" class="w-5 h-5 text-emerald-400"></i>
+      </div><span class="text-xl font-bold mono">DevLoops</span>
+     </div>
+     <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
+      <a href="#projects" class="hover:text-emerald-400 transition">Projects</a> <a href="#community" class="hover:text-emerald-400 transition">Community</a> <a href="#events" class="hover:text-emerald-400 transition">Events</a> <button id="dashboard-btn" class="text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1"><i data-lucide="user" class="w-4 h-4"></i>My Dashboard</button> <button id="nav-cta" class="bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-semibold px-4 py-2 rounded-lg transition">Join Now</button>
+     </div><button id="mobile-menu-btn" class="md:hidden text-gray-400"> <i data-lucide="menu" class="w-6 h-6"></i> </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-3">
+     <a href="#projects" class="block text-gray-400 hover:text-emerald-400">Projects</a> <a href="#community" class="block text-gray-400 hover:text-emerald-400">Community</a> <a href="#events" class="block text-gray-400 hover:text-emerald-400">Events</a> <button class="w-full bg-emerald-500 text-gray-950 font-semibold px-4 py-2 rounded-lg">Join Now</button>
+    </div>
+   </nav><!-- Hero -->
+   <section class="pt-32 pb-20 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.08),transparent_60%)]"></div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+     <div class="inline-flex items-center gap-2 bg-gray-800/60 border border-gray-700/50 rounded-full px-4 py-1.5 text-xs text-gray-400 mb-8">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span>42 developers active in your area</span>
+     </div>
+     <h1 id="hero-title" class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">Code Together,<br><span class="gradient-text">Build Locally</span></h1>
+     <p id="hero-subtitle" class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10">Connect with developers in your neighborhood. Collaborate on projects, squash bugs, and grow together in real-time.</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button id="hero-cta" class="glow bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold px-8 py-4 rounded-xl text-lg transition"> Find Your Loop </button> <button class="border border-gray-700 hover:border-emerald-500/50 text-gray-300 px-8 py-4 rounded-xl text-lg transition"> Explore Projects </button>
+     </div><!-- Floating code snippet -->
+     <div class="mt-16 float">
+      <div class="max-w-md mx-auto bg-gray-900 border border-gray-800 rounded-xl p-4 text-left mono text-sm">
+       <div class="flex gap-1.5 mb-3"><span class="w-3 h-3 rounded-full bg-red-500/70"></span><span class="w-3 h-3 rounded-full bg-yellow-500/70"></span><span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+       </div>
+       <p class="text-gray-500">// Your next collab starts here</p>
+       <p><span class="text-cyan-400">const</span> <span class="text-emerald-400">loop</span> = <span class="text-cyan-400">await</span> devloops.<span class="text-yellow-300">connect</span>({</p>
+       <p class="pl-4"><span class="text-gray-400">locality:</span> <span class="text-orange-300">"your_area"</span>,</p>
+       <p class="pl-4"><span class="text-gray-400">skills:</span> [<span class="text-orange-300">"react"</span>, <span class="text-orange-300">"node"</span>]</p>
+       <p>});</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Stats -->
+   <section class="py-12 px-6 border-y border-gray-800/50">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+     <div>
+      <p class="text-3xl font-bold text-emerald-400">2.4K+</p>
+      <p class="text-sm text-gray-500 mt-1">Active Devs</p>
+     </div>
+     <div>
+      <p class="text-3xl font-bold text-cyan-400">380+</p>
+      <p class="text-sm text-gray-500 mt-1">Projects</p>
+     </div>
+     <div>
+      <p class="text-3xl font-bold text-yellow-400">1.2K</p>
+      <p class="text-sm text-gray-500 mt-1">Bugs Fixed</p>
+     </div>
+     <div>
+      <p class="text-3xl font-bold text-purple-400">56</p>
+      <p class="text-sm text-gray-500 mt-1">Localities</p>
+     </div>
+    </div>
+   </section><!-- Features -->
+   <section id="projects" class="py-20 px-6">
+    <div class="max-w-6xl mx-auto">
+     <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">How DevLoops Works</h2>
+     <p class="text-gray-400 text-center mb-14 max-w-xl mx-auto">Three steps to find your crew and start shipping code together.</p>
+     <div class="grid md:grid-cols-3 gap-6">
+      <div class="card-hover bg-gray-900/60 border border-gray-800/60 rounded-2xl p-8">
+       <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-5">
+        <i data-lucide="map-pin" class="w-6 h-6 text-emerald-400"></i>
+       </div>
+       <h3 class="text-xl font-semibold mb-3">Set Your Locality</h3>
+       <p class="text-gray-400 text-sm leading-relaxed">Pin your neighborhood and discover developers within walking distance who share your stack.</p>
+      </div>
+      <div class="card-hover bg-gray-900/60 border border-gray-800/60 rounded-2xl p-8">
+       <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-5">
+        <i data-lucide="git-branch" class="w-6 h-6 text-cyan-400"></i>
+       </div>
+       <h3 class="text-xl font-semibold mb-3">Join a Project</h3>
+       <p class="text-gray-400 text-sm leading-relaxed">Browse open projects or post your own. From bug bounties to full-stack builds — find your fit.</p>
+      </div>
+      <div class="card-hover bg-gray-900/60 border border-gray-800/60 rounded-2xl p-8">
+       <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-5">
+        <i data-lucide="users" class="w-6 h-6 text-purple-400"></i>
+       </div>
+       <h3 class="text-xl font-semibold mb-3">Loop &amp; Ship</h3>
+       <p class="text-gray-400 text-sm leading-relaxed">Meet at local cafés or co-work spaces. Pair program, review PRs, and ship features together.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Active Projects -->
+   <section class="py-20 px-6 bg-gray-900/30">
+    <div class="max-w-6xl mx-auto">
+     <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+      <h2 class="text-3xl font-bold">Active Projects</h2>
+      <div class="flex gap-2 items-center flex-wrap">
+       <div class="flex gap-1 text-sm">
+        <button class="tab-btn tab-active px-4 py-2 transition" data-tab="all">All</button> <button class="tab-btn px-4 py-2 text-gray-500 hover:text-gray-300 transition" data-tab="bugs">Bug Fixes</button> <button class="tab-btn px-4 py-2 text-gray-500 hover:text-gray-300 transition" data-tab="features">Features</button> <button class="tab-btn px-4 py-2 text-gray-500 hover:text-gray-300 transition" data-tab="collab">Collabs</button>
+       </div><button id="new-project-btn" class="bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-400 text-sm px-3 py-2 rounded-lg transition flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Post Project</button>
+      </div>
+     </div>
+     <div id="projects-grid" class="grid md:grid-cols-2 gap-5">
+     </div>
+    </div>
+   </section><!-- New Project Modal -->
+   <div id="project-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-8 max-h-[90vh] overflow-auto">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="text-2xl font-bold">Post a Project</h3><button id="close-modal" class="text-gray-500 hover:text-gray-300 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+     </div>
+     <form id="project-form" class="space-y-4">
+      <div><label class="block text-sm font-semibold mb-2">Project Title</label> <input type="text" id="form-title" placeholder="e.g., Fix Auth Bug" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition" required>
+      </div>
+      <div><label class="block text-sm font-semibold mb-2">Description</label> <textarea id="form-desc" placeholder="What's this project about?" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition resize-none h-24" required></textarea>
+      </div>
+      <div><label class="block text-sm font-semibold mb-2">Type</label> <select id="form-type" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-emerald-500/50 transition" required> <option value="">Select type</option> <option value="bugs">Bug Fix</option> <option value="features">Feature</option> <option value="collab">Collaboration</option> </select>
+      </div>
+      <div><label class="block text-sm font-semibold mb-2">Tags (comma separated)</label> <input type="text" id="form-tags" placeholder="React, Node.js, TypeScript" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition" required>
+      </div>
+      <div><label class="block text-sm font-semibold mb-2">Difficulty</label> <select id="form-difficulty" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-emerald-500/50 transition" required> <option value="">Select difficulty</option> <option value="Beginner">Beginner</option> <option value="Intermediate">Intermediate</option> <option value="Advanced">Advanced</option> </select>
+      </div>
+      <div><label class="block text-sm font-semibold mb-2">Your Name</label> <input type="text" id="form-author" placeholder="Your name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition" required>
+      </div>
+      <div id="form-error" class="hidden text-red-400 text-sm bg-red-500/10 border border-red-500/30 rounded-lg p-3"></div><button type="submit" id="form-submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-lg transition mt-6">Post Project</button>
+     </form>
+    </div>
+   </div><!-- Community -->
+   <section id="community" class="py-20 px-6">
+    <div class="max-w-6xl mx-auto">
+     <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Your Local Dev Community</h2>
+     <p class="text-gray-400 text-center mb-14 max-w-xl mx-auto">People near you who are ready to collaborate.</p>
+     <div id="community-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+     </div>
+    </div>
+   </section><!-- Events -->
+   <section id="events" class="py-20 px-6 bg-gray-900/30">
+    <div class="max-w-4xl mx-auto">
+     <h2 class="text-3xl font-bold text-center mb-12">Upcoming Meetups</h2>
+     <div class="space-y-4" id="events-list"></div>
+    </div>
+   </section><!-- CTA -->
+   <section class="py-24 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(16,185,129,0.1),transparent_60%)]"></div>
+    <div class="max-w-3xl mx-auto text-center relative z-10">
+     <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to Join<br><span class="gradient-text">Your Local Loop?</span></h2>
+     <p class="text-gray-400 mb-10">Start connecting with developers in your area today. No waitlist, no gatekeeping.</p><button id="bottom-cta" class="glow bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold px-10 py-4 rounded-xl text-lg transition">Get Started — It's Free</button>
+    </div>
+   </section><!-- Footer -->
+   <footer class="border-t border-gray-800/50 py-10 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+     <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded bg-emerald-500/20 flex items-center justify-center"><i data-lucide="repeat" class="w-4 h-4 text-emerald-400"></i>
+      </div><span class="mono font-bold">DevLoops</span>
+     </div>
+     <p class="text-sm text-gray-500">© 2024 DevLoops. Built by developers, for developers.</p>
+     <div class="flex gap-4 text-gray-500">
+      <i data-lucide="github" class="w-5 h-5 hover:text-emerald-400 cursor-pointer transition"></i> <i data-lucide="twitter" class="w-5 h-5 hover:text-emerald-400 cursor-pointer transition"></i> <i data-lucide="linkedin" class="w-5 h-5 hover:text-emerald-400 cursor-pointer transition"></i>
+     </div>
+    </div>
+   </footer><!-- Join Project Modal -->
+   <div id="join-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-8">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="text-2xl font-bold">Join Project</h3><button id="close-join-modal" class="text-gray-500 hover:text-gray-300 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+     </div>
+     <div id="join-modal-content">
+      <p id="join-project-title" class="text-lg font-semibold mb-4"></p>
+      <form id="join-form" class="space-y-4">
+       <div><label class="block text-sm font-semibold mb-2">Your Name</label> <input type="text" id="join-name" placeholder="Your name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition" required>
+       </div>
+       <div><label class="block text-sm font-semibold mb-2">Why do you want to join?</label> <textarea id="join-reason" placeholder="Tell us about your interest..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition resize-none h-20" required></textarea>
+       </div>
+       <div id="join-error" class="hidden text-red-400 text-sm bg-red-500/10 border border-red-500/30 rounded-lg p-3"></div><button type="submit" id="join-submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-lg transition">Join This Project</button>
+      </form>
+     </div>
+    </div>
+   </div><!-- Event RSVP Modal -->
+   <div id="rsvp-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-8">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="text-2xl font-bold">RSVP to Event</h3><button id="close-rsvp-modal" class="text-gray-500 hover:text-gray-300 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+     </div>
+     <div id="rsvp-modal-content">
+      <p id="rsvp-event-title" class="text-lg font-semibold mb-2"></p>
+      <p id="rsvp-event-info" class="text-gray-400 text-sm mb-6"></p>
+      <form id="rsvp-form" class="space-y-4">
+       <div><label class="block text-sm font-semibold mb-2">Your Name</label> <input type="text" id="rsvp-name" placeholder="Your name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition" required>
+       </div>
+       <div><label class="block text-sm font-semibold mb-2">Email</label> <input type="email" id="rsvp-email" placeholder="your@email.com" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition" required>
+       </div>
+       <div><label class="block text-sm font-semibold mb-2">How many attendees?</label> <select id="rsvp-count" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-emerald-500/50 transition" required> <option value="">Select number</option> <option value="1">1 person</option> <option value="2">2 people</option> <option value="3">3 people</option> <option value="4">4+ people</option> </select>
+       </div>
+       <div id="rsvp-error" class="hidden text-red-400 text-sm bg-red-500/10 border border-red-500/30 rounded-lg p-3"></div><button type="submit" id="rsvp-submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-lg transition">Confirm RSVP</button>
+      </form>
+     </div>
+    </div>
+   </div><!-- Join Success Notification -->
+   <div id="success-toast" class="hidden fixed bottom-6 right-6 z-50 bg-emerald-500/20 border border-emerald-500/50 rounded-lg p-4 text-emerald-400 text-sm flex items-center gap-2 animate-pulse max-w-xs">
+    <i data-lucide="check-circle" class="w-5 h-5"></i> <span id="toast-text">Successfully joined!</span>
+   </div><!-- Dashboard Modal -->
+   <div id="dashboard-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-auto">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="text-2xl font-bold">My Dashboard</h3><button id="close-dashboard" class="text-gray-500 hover:text-gray-300 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+     </div><!-- Dashboard Tabs -->
+     <div class="flex gap-4 border-b border-gray-800 mb-6"><button class="dashboard-tab dashboard-tab-active px-4 py-2 text-emerald-400 border-b-2 border-emerald-500 transition" data-tab="joins">Projects I've Joined</button> <button class="dashboard-tab px-4 py-2 text-gray-500 hover:text-gray-300 transition" data-tab="rsvps">My RSVPs</button>
+     </div><!-- Joined Projects Tab -->
+     <div id="joins-tab" class="dashboard-tab-content space-y-4">
+      <div id="joins-list"></div>
+     </div><!-- RSVPs Tab -->
+     <div id="rsvps-tab" class="dashboard-tab-content hidden space-y-4">
+      <div id="rsvps-list"></div>
+     </div>
+    </div>
+   </div>
+   <script>
+    // Data SDK handler
+    let storedProjects = [];
+    
+    const dataHandler = {
+      onDataChanged(data) {
+        storedProjects = data;
+        renderProjects('all');
+      }
+    };
+
+    // Initialize Data SDK
+    (async () => {
+      const initResult = await window.dataSdk.init(dataHandler);
+      if (!initResult.isOk) {
+        console.error('Data SDK initialization failed');
+      }
+    })();
+
+    // Sample data
+    const projects = [
+      { title: "LocalEats API", type: "features", tags: ["Node.js", "PostgreSQL"], difficulty: "Intermediate", members: "4", desc: "Building a restaurant discovery API for the neighborhood.", urgent: false },
+      { title: "Transit Tracker Bug #247", type: "bugs", tags: ["React", "TypeScript"], difficulty: "Beginner", members: "2", desc: "Fix geolocation timeout on mobile browsers.", urgent: true },
+      { title: "Community Garden App", type: "collab", tags: ["Flutter", "Firebase"], difficulty: "Advanced", members: "6", desc: "Full-stack app to manage shared garden plots and schedules.", urgent: false },
+      { title: "Parking Finder Widget", type: "bugs", tags: ["JavaScript", "CSS"], difficulty: "Beginner", members: "1", desc: "Layout breaks on Safari when spots exceed 20.", urgent: true },
+      { title: "Neighborhood Watch Bot", type: "features", tags: ["Python", "Discord.py"], difficulty: "Intermediate", members: "3", desc: "Automated alerts for community safety updates.", urgent: false },
+      { title: "Local Library System", type: "collab", tags: ["Vue.js", "Supabase"], difficulty: "Intermediate", members: "5", desc: "Digital catalog and book exchange for local libraries.", urgent: false }
+    ];
+
+    const community = [
+      { name: "Ava M.", skills: "React, TS", avatar: "🧑‍💻" },
+      { name: "Raj P.", skills: "Python, ML", avatar: "👨‍💻" },
+      { name: "Luna K.", skills: "Go, DevOps", avatar: "👩‍💻" },
+      { name: "Omar S.", skills: "Flutter", avatar: "🧑‍💻" },
+      { name: "Yuki T.", skills: "Rust, Wasm", avatar: "👩‍💻" },
+      { name: "Chloe D.", skills: "Vue, Node", avatar: "👨‍💻" }
+    ];
+
+    const events = [
+      { title: "Bug Bash Saturday", date: "Jan 18", time: "2:00 PM", location: "Brew & Code Café", spots: 8 },
+      { title: "React Meetup", date: "Jan 22", time: "6:30 PM", location: "Tech Hub Co-work", spots: 15 },
+      { title: "Open Source Sprint", date: "Jan 25", time: "10:00 AM", location: "Central Library", spots: 20 }
+    ];
+
+    function renderProjects(filter = "all") {
+      const grid = document.getElementById("projects-grid");
+      const combined = [...storedProjects, ...projects];
+      const filtered = filter === "all" ? combined : combined.filter(p => p.type === filter);
+      
+      grid.innerHTML = filtered.map((p, idx) => {
+        const projectId = p.id || `sample-${idx}`;
+        const isSample = !p.id || !p.createdAt;
+        return `
+        <div class="card-hover bg-gray-900 border border-gray-800/60 rounded-xl p-6">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-semibold text-lg">${p.title}</h3>
+            ${p.urgent ? '<span class="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">Urgent</span>' : ''}
+          </div>
+          <p class="text-gray-400 text-sm mb-4">${p.description || p.desc}</p>
+          <div class="flex flex-wrap gap-2 mb-4">${(typeof p.tags === 'string' ? p.tags.split(',').map(t => t.trim()) : p.tags).map(t => `<span class="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-md mono">${t}</span>`).join('')}</div>
+          <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+            <span>${p.difficulty}</span>
+            <span class="flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i>${p.members || p.joinedMembers || '0'} members</span>
+          </div>
+          <button class="join-project-btn w-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-400 text-sm px-3 py-2 rounded-lg transition" data-project-id="${projectId}" data-project-title="${p.title}">
+            <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i>Join Team
+          </button>
+        </div>
+      `}).join('');
+      lucide.createIcons();
+      attachProjectListeners();
+    }
+
+    function renderCommunity() {
+      const grid = document.getElementById("community-grid");
+      grid.innerHTML = community.map(c => `
+        <div class="card-hover bg-gray-900 border border-gray-800/60 rounded-xl p-4 text-center">
+          <div class="text-3xl mb-2">${c.avatar}</div>
+          <p class="font-semibold text-sm">${c.name}</p>
+          <p class="text-xs text-gray-500 mt-1">${c.skills}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderEvents() {
+      const list = document.getElementById("events-list");
+      list.innerHTML = events.map((e, idx) => `
+        <div class="card-hover flex items-center justify-between bg-gray-900 border border-gray-800/60 rounded-xl p-5 flex-wrap gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-500/10 flex flex-col items-center justify-center">
+              <span class="text-xs text-emerald-400 font-bold">${e.date.split(' ')[0]}</span>
+              <span class="text-sm font-bold text-emerald-300">${e.date.split(' ')[1]}</span>
+            </div>
+            <div>
+              <h4 class="font-semibold">${e.title}</h4>
+              <p class="text-sm text-gray-500">${e.time} · ${e.location}</p>
+            </div>
+          </div>
+          <button class="rsvp-btn text-sm bg-gray-800 hover:bg-emerald-500/20 hover:text-emerald-400 border border-gray-700 hover:border-emerald-500/50 px-4 py-2 rounded-lg transition" data-event-idx="${idx}" data-event-title="${e.title}" data-event-info="${e.date} at ${e.time} · ${e.location}">${e.spots} spots — RSVP</button>
+        </div>
+      `).join('');
+      attachEventListeners();
+    }
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.classList.add('text-gray-500'); });
+        btn.classList.add('tab-active'); btn.classList.remove('text-gray-500');
+        renderProjects(btn.dataset.tab);
+      });
+    });
+
+    // Modal handling
+    const modal = document.getElementById('project-modal');
+    const openBtn = document.getElementById('new-project-btn');
+    const closeBtn = document.getElementById('close-modal');
+    const form = document.getElementById('project-form');
+    const submitBtn = document.getElementById('form-submit');
+    const errorDiv = document.getElementById('form-error');
+
+    openBtn.addEventListener('click', () => { modal.classList.remove('hidden'); });
+    closeBtn.addEventListener('click', () => { modal.classList.add('hidden'); });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const title = document.getElementById('form-title').value.trim();
+      const desc = document.getElementById('form-desc').value.trim();
+      const type = document.getElementById('form-type').value;
+      const tags = document.getElementById('form-tags').value.trim();
+      const difficulty = document.getElementById('form-difficulty').value;
+      const author = document.getElementById('form-author').value.trim();
+
+      if (!title || !desc || !type || !tags || !difficulty || !author) {
+        errorDiv.textContent = 'Please fill in all fields';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Check data limit
+      if (storedProjects.length >= 999) {
+        errorDiv.textContent = 'Maximum projects limit reached (999)';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Posting...';
+
+      const projectData = {
+        id: Date.now().toString(),
+        title,
+        description: desc,
+        type,
+        tags,
+        difficulty,
+        author,
+        members: '1',
+        createdAt: new Date().toISOString()
+      };
+
+      const result = await window.dataSdk.create(projectData);
+      
+      if (result.isOk) {
+        form.reset();
+        modal.classList.add('hidden');
+      } else {
+        errorDiv.textContent = 'Failed to post project. Try again.';
+        errorDiv.classList.remove('hidden');
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Post Project';
+    });
+
+    // Join Project Modal
+    const joinModal = document.getElementById('join-modal');
+    const closeJoinBtn = document.getElementById('close-join-modal');
+    const joinForm = document.getElementById('join-form');
+    const joinSubmitBtn = document.getElementById('join-submit');
+    const joinErrorDiv = document.getElementById('join-error');
+    const successToast = document.getElementById('success-toast');
+
+    closeJoinBtn.addEventListener('click', () => { joinModal.classList.add('hidden'); });
+    joinModal.addEventListener('click', (e) => {
+      if (e.target === joinModal) joinModal.classList.add('hidden');
+    });
+
+    function attachProjectListeners() {
+      document.querySelectorAll('.join-project-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const projectId = btn.dataset.projectId;
+          const projectTitle = btn.dataset.projectTitle;
+          document.getElementById('join-project-title').textContent = `Join: ${projectTitle}`;
+          joinForm.dataset.projectId = projectId;
+          joinModal.classList.remove('hidden');
+          joinForm.reset();
+          joinErrorDiv.classList.add('hidden');
+        });
+      });
+    }
+
+    joinForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      joinErrorDiv.classList.add('hidden');
+
+      const name = document.getElementById('join-name').value.trim();
+      const reason = document.getElementById('join-reason').value.trim();
+      const projectId = joinForm.dataset.projectId;
+
+      if (!name || !reason) {
+        joinErrorDiv.textContent = 'Please fill in all fields';
+        joinErrorDiv.classList.remove('hidden');
+        return;
+      }
+
+      joinSubmitBtn.disabled = true;
+      joinSubmitBtn.textContent = 'Joining...';
+
+      const joinData = {
+        id: `join-${Date.now()}`,
+        eventId: projectId,
+        eventTitle: document.getElementById('join-project-title').textContent.replace('Join: ', ''),
+        userName: name,
+        eventDate: new Date().toISOString(),
+        eventTime: reason,
+        title: 'project_join',
+        description: reason,
+        type: 'join',
+        tags: 'collaboration',
+        difficulty: 'N/A',
+        members: '1',
+        createdAt: new Date().toISOString(),
+        rsvpedAt: new Date().toISOString()
+      };
+
+      const result = await window.dataSdk.create(joinData);
+      
+      if (result.isOk) {
+        joinForm.reset();
+        joinModal.classList.add('hidden');
+        showSuccessToast(`${name} joined the project!`);
+      } else {
+        joinErrorDiv.textContent = 'Failed to join project. Try again.';
+        joinErrorDiv.classList.remove('hidden');
+      }
+
+      joinSubmitBtn.disabled = false;
+      joinSubmitBtn.textContent = 'Join This Project';
+    });
+
+    // RSVP Modal
+    const rsvpModal = document.getElementById('rsvp-modal');
+    const closeRsvpBtn = document.getElementById('close-rsvp-modal');
+    const rsvpForm = document.getElementById('rsvp-form');
+    const rsvpSubmitBtn = document.getElementById('rsvp-submit');
+    const rsvpErrorDiv = document.getElementById('rsvp-error');
+
+    closeRsvpBtn.addEventListener('click', () => { rsvpModal.classList.add('hidden'); });
+    rsvpModal.addEventListener('click', (e) => {
+      if (e.target === rsvpModal) rsvpModal.classList.add('hidden');
+    });
+
+    function attachEventListeners() {
+      document.querySelectorAll('.rsvp-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const eventIdx = btn.dataset.eventIdx;
+          const eventTitle = btn.dataset.eventTitle;
+          const eventInfo = btn.dataset.eventInfo;
+          document.getElementById('rsvp-event-title').textContent = eventTitle;
+          document.getElementById('rsvp-event-info').textContent = eventInfo;
+          rsvpForm.dataset.eventIdx = eventIdx;
+          rsvpModal.classList.remove('hidden');
+          rsvpForm.reset();
+          rsvpErrorDiv.classList.add('hidden');
+        });
+      });
+    }
+
+    rsvpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      rsvpErrorDiv.classList.add('hidden');
+
+      const name = document.getElementById('rsvp-name').value.trim();
+      const email = document.getElementById('rsvp-email').value.trim();
+      const count = document.getElementById('rsvp-count').value;
+
+      if (!name || !email || !count) {
+        rsvpErrorDiv.textContent = 'Please fill in all fields';
+        rsvpErrorDiv.classList.remove('hidden');
+        return;
+      }
+
+      rsvpSubmitBtn.disabled = true;
+      rsvpSubmitBtn.textContent = 'Confirming...';
+
+      const rsvpData = {
+        id: `rsvp-${Date.now()}`,
+        eventId: rsvpForm.dataset.eventIdx,
+        eventTitle: document.getElementById('rsvp-event-title').textContent,
+        userName: name,
+        eventDate: document.getElementById('rsvp-event-info').textContent,
+        eventTime: `${count} attendee${count > 1 ? 's' : ''}`,
+        title: 'event_rsvp',
+        description: `${name} (${email}) RSVPed for ${count} attendee${count > 1 ? 's' : ''}`,
+        type: 'rsvp',
+        tags: 'event',
+        difficulty: 'N/A',
+        members: count,
+        createdAt: new Date().toISOString(),
+        rsvpedAt: new Date().toISOString()
+      };
+
+      const result = await window.dataSdk.create(rsvpData);
+      
+      if (result.isOk) {
+        rsvpForm.reset();
+        rsvpModal.classList.add('hidden');
+        showSuccessToast(`RSVP confirmed for ${name}!`);
+      } else {
+        rsvpErrorDiv.textContent = 'Failed to RSVP. Try again.';
+        rsvpErrorDiv.classList.remove('hidden');
+      }
+
+      rsvpSubmitBtn.disabled = false;
+      rsvpSubmitBtn.textContent = 'Confirm RSVP';
+    });
+
+    // Success Toast
+    function showSuccessToast(message) {
+      const toast = document.getElementById('success-toast');
+      document.getElementById('toast-text').textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Dashboard
+    const dashboardModal = document.getElementById('dashboard-modal');
+    const dashboardBtn = document.getElementById('dashboard-btn');
+    const closeDashboardBtn = document.getElementById('close-dashboard');
+
+    dashboardBtn.addEventListener('click', () => {
+      dashboardModal.classList.remove('hidden');
+      renderDashboard();
+    });
+
+    closeDashboardBtn.addEventListener('click', () => {
+      dashboardModal.classList.add('hidden');
+    });
+
+    dashboardModal.addEventListener('click', (e) => {
+      if (e.target === dashboardModal) dashboardModal.classList.add('hidden');
+    });
+
+    // Dashboard tabs
+    document.querySelectorAll('.dashboard-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.dashboard-tab').forEach(b => {
+          b.classList.remove('dashboard-tab-active', 'text-emerald-400', 'border-b-2', 'border-emerald-500');
+          b.classList.add('text-gray-500');
+        });
+        document.querySelectorAll('.dashboard-tab-content').forEach(c => c.classList.add('hidden'));
+
+        btn.classList.add('dashboard-tab-active', 'text-emerald-400', 'border-b-2', 'border-emerald-500');
+        btn.classList.remove('text-gray-500');
+        
+        const tab = btn.dataset.tab;
+        document.getElementById(`${tab}-tab`).classList.remove('hidden');
+      });
+    });
+
+    function renderDashboard() {
+      // Filter joins (entries with title containing 'project_join')
+      const joins = storedProjects.filter(p => p.type === 'join' || p.title === 'project_join');
+      const rsvps = storedProjects.filter(p => p.type === 'rsvp' || p.title === 'event_rsvp');
+
+      const joinsList = document.getElementById('joins-list');
+      const rsvpsList = document.getElementById('rsvps-list');
+
+      if (joins.length === 0) {
+        joinsList.innerHTML = '<p class="text-gray-400 text-center py-8">You haven\'t joined any projects yet. Start exploring!</p>';
+      } else {
+        joinsList.innerHTML = joins.map(join => `
+          <div class="bg-gray-800/50 border border-gray-700/50 rounded-lg p-4">
+            <h4 class="font-semibold text-lg mb-2">${join.eventTitle || 'Unknown Project'}</h4>
+            <p class="text-gray-400 text-sm mb-2">Joined: ${new Date(join.createdAt).toLocaleDateString()}</p>
+            <p class="text-gray-300 text-sm mb-3">${join.eventTime || 'No reason provided'}</p>
+            <div class="flex gap-2">
+              <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md">Joined</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (rsvps.length === 0) {
+        rsvpsList.innerHTML = '<p class="text-gray-400 text-center py-8">You haven\'t RSVPed to any events yet. Check out upcoming meetups!</p>';
+      } else {
+        rsvpsList.innerHTML = rsvps.map(rsvp => `
+          <div class="bg-gray-800/50 border border-gray-700/50 rounded-lg p-4">
+            <h4 class="font-semibold text-lg mb-2">${rsvp.eventTitle || 'Unknown Event'}</h4>
+            <p class="text-gray-400 text-sm mb-2">Event: ${rsvp.eventDate || 'Date TBA'}</p>
+            <p class="text-gray-300 text-sm mb-2">Attendees: <span class="font-semibold">${rsvp.eventTime || 'TBA'}</span></p>
+            <p class="text-gray-400 text-sm mb-3">RSVP Date: ${new Date(rsvp.createdAt).toLocaleDateString()}</p>
+            <div class="flex gap-2">
+              <span class="text-xs bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded-md">Confirmed</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Mobile menu
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // Init
+    renderProjects();
+    renderCommunity();
+    renderEvents();
+    lucide.createIcons();
+
+    // Element SDK
+    const defaultConfig = {
+      hero_title: 'Code Together,<br><span class="gradient-text">Build Locally</span>',
+      hero_subtitle: 'Connect with developers in your neighborhood. Collaborate on projects, squash bugs, and grow together in real-time.',
+      cta_button_text: 'Find Your Loop',
+      background_color: '#030712',
+      surface_color: '#111827',
+      text_color: '#f3f4f6',
+      primary_action_color: '#10b981',
+      secondary_action_color: '#06b6d4',
+      font_family: 'Sora',
+      font_size: 16
+    };
+
+    function applyConfig(config) {
+      document.getElementById('hero-title').innerHTML = config.hero_title || defaultConfig.hero_title;
+      document.getElementById('hero-subtitle').textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      document.getElementById('hero-cta').textContent = config.cta_button_text || defaultConfig.cta_button_text;
+
+      const bg = config.background_color || defaultConfig.background_color;
+      const surface = config.surface_color || defaultConfig.surface_color;
+      const text = config.text_color || defaultConfig.text_color;
+      const primary = config.primary_action_color || defaultConfig.primary_action_color;
+      const font = config.font_family || defaultConfig.font_family;
+      const size = config.font_size || defaultConfig.font_size;
+
+      document.body.style.backgroundColor = bg;
+      document.body.style.color = text;
+      document.body.style.fontFamily = `${font}, Sora, sans-serif`;
+      document.body.style.fontSize = `${size}px`;
+
+      document.querySelectorAll('.bg-emerald-500, #hero-cta, #nav-cta, #bottom-cta').forEach(el => {
+        el.style.backgroundColor = primary;
+      });
+    }
+
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => { applyConfig(config); },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+          { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+          { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+        ],
+        borderables: [],
+        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+        fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ["hero_title", config.hero_title || defaultConfig.hero_title],
+        ["hero_subtitle", config.hero_subtitle || defaultConfig.hero_subtitle],
+        ["cta_button_text", config.cta_button_text || defaultConfig.cta_button_text]
+      ])
+    });
+  </script>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fddea4a75488aec',t:'MTc3OTEzOTMyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
